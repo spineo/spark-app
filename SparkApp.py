@@ -1,14 +1,43 @@
-"""SparkApp.py"""
+#!/usr/bin/python
+  
+###############################################################################
+# Name       : SparkApp.py
+# Usage      : ./SparkApp.py --infile /SomePath/SomeFile
+# Author     : Stuart Pineo <svpineo@gmail.com>
+# Description: Filter/aggregate lines using PySpark
+#
+##############################################################################
+
+import sys
+
+import os.path
+from os import path
+
+import argparse
+
+from string import ascii_lowercase
+
+
+# Add the long and short argument
+#
+parser = argparse.ArgumentParser()
+parser.add_argument("--infile", "-i", help="Set the input file (i.e., log file)")
+
+args = parser.parse_args()
+
+inFile = args.infile
+
+if not (inFile and os.path.isfile(inFile)):
+    print("The input file parameter --infile or -i must be defined and file must exist.")
+    sys.exit(1)
 
 from pyspark.sql import SparkSession
 
-logFile = "/home/svpineo/git/spark//README.md"  # Should be some file on your system
-spark = SparkSession.builder.appName("SimpleApp").getOrCreate()
-logData = spark.read.text(logFile).cache()
+spark  = SparkSession.builder.appName("SimpleApp").getOrCreate()
+inData = spark.read.text(inFile).cache()
 
-numAs = logData.filter(logData.value.contains('a')).count()
-numBs = logData.filter(logData.value.contains('b')).count()
-
-print("Lines with a: %i, lines with b: %i" % (numAs, numBs))
+for char in ascii_lowercase:
+    count = inData.filter(inData.value.contains(char)).count()
+    print("Number of lines with the character '%s': %i" % (char, count))
 
 spark.stop()
