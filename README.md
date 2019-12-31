@@ -6,9 +6,9 @@ Test application using PySpark (Python) that outputs alphabet characters counts 
 
 The below steps show the installation in an AWS _Amazon Linux_ instance
 
-### 1. If needed, install Python (2 or 3) as 'root' user (python 3 being the preferred option)
+### 1. If needed, install Python (2 or 3) as _root_ user (version 3 being the preferred option)
 
-### 2. Set up the pip installer and install the library (root)
+### 2. Set up the _pip_ installer and install the library (root)
 
 ```
 curl -O https://bootstrap.pypa.io/get-pip.py
@@ -17,7 +17,7 @@ export PATH=$PATH:~/.local/bin (or, on Mac OS add this path to /etc/paths, make 
 pip install pyspark --user
 ```
 
-You may need to run it using python (i.e., python 2.7, no longer supported as of 2020) and/or python3 (python 3.7) which is recommwended
+You may need to run it using python (i.e., python 2.7, no longer supported as of 2020) and/or python3 (python 3.7) which is recommended
 
 ### 3. Run the application:
 
@@ -27,9 +27,9 @@ You may need to run it using python (i.e., python 2.7, no longer supported as of
 
 ## Submit the same job using the _Apache Spark_ (v2.4.4) installation
 
-### 1. Ensure that Java 8.x and Maven 3.x installed if using the AWS instance (i.e., you can use _yum_ install_ and then run below command to verify)
+### 1. Ensure that Java 8.x and Maven 3.x installed if using the AWS instance (i.e., you can use _yum install_ and then run below command to verify)
 ```
-[svpineo@ip-*-*-*-* spark]$ mvn -version (or java -version on Mac OS)
+[someuser@ip-*-*-*-* spark]$ mvn -version (or java -version on Mac OS)
 Apache Maven 3.0.5 (Red Hat 3.0.5-17)
 Maven home: /usr/share/maven
 Java version: 1.8.0_222, vendor: Oracle Corporation
@@ -44,7 +44,7 @@ OS name: "linux", version: "4.14.154-128.181.amzn2.x86_64", arch: "amd64", famil
 
 On Amazon Linux (ensure that you create or upgrade to at least a _t2.large_ instance)
 ```
-sudo su _svpineo_ (default user is _ec2-user_)
+sudo su someuser (Note: default user is ec2-user)
 git clone https://github.com/apache/spark.git (local directory)
 cd spark
 ./build/mvn -DskipTests clean package
@@ -56,12 +56,12 @@ On Mac OS (as _root_ user)
 brew upgrade && brew update
 brew install scala
 brew install apache-spark
-sudo vi /etc/paths and add _/usr/local/Cellar/apache-spark/2.4.4/bin_ (or executable path)
+sudo vi /etc/paths and add /usr/local/Cellar/apache-spark/2.4.4/bin (or executable path)
 ```
 
 ### 3. Run the application:
 ```
-spark-submit --master local[4] SparkApp.py --infile README.md
+spark-submit --master local[4] SparkApp.py --infile /somepath/sometextfile
 ```
 
 
