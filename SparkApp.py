@@ -9,6 +9,7 @@
 ##############################################################################
 
 import sys
+import time
 
 import os.path
 from os import path
@@ -39,5 +40,7 @@ inData = spark.read.text(inFile).cache()
 for char in ascii_lowercase:
     count = inData.filter(inData.value.contains(char)).count()
     print("Number of lines with the character '%s': %i" % (char, count))
+
+time.sleep(5)
 
 spark.stop()
