@@ -78,7 +78,15 @@ export SPARK_HOME=/usr/local/Cellar/apache-spark/2.4.4 (can add this to the ~/.b
 export SPARK_WORKER_INSTANCES=2
 cd $SPARK_HOME/libexec
 sbin/start-master.sh (this will start the master running locally on port 8080)
-sbin/start-slave.sh spark://**********:7077 (this url can be copied/paster from UI at localhost:8080 as shown in Screen Shot)
+sbin/start-slave.sh spark://**********:7077 (this url can be copied/paster from UI at localhost:8080 as shown in screen shot that follows)
 ```
 
 ![Spark Standalone Cluster UI](images/spark-standalone.png)
+
+Submit the application (this time `referencing the master) and navigate to the UI (as shown in screen shot below) to verify execution.
+
+```
+spark-submit --master spark://**********:7077 SparkApp.py --infile /somepath/sometextfile
+```
+
+![Spark Standalone Cluster Running Application](images/spark-standalone-running.png)
