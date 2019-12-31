@@ -63,8 +63,20 @@ sudo vi /etc/paths and add /usr/local/Cellar/apache-spark/2.4.4/bin (or executab
 ```
 spark-submit --master local[4] SparkApp.py --infile /somepath/sometextfile
 ```
-
+(in this case, run locally with thread count set to 4)
 
 ## Using the Interactive Shell
 
 A Quick Start guide available at https://spark.apache.org/docs/latest/quick-start.html on using the Python (or Scala) Spark Shells
+
+## Set up a Cluster in Standalone Mode
+
+### Setting up a Cluster with one Master and two Executors Running locally (on Mac OS)
+
+```
+export SPARK_HOME=/usr/local/Cellar/apache-spark/2.4.4 (can add this to the ~/.bashrc)
+export SPARK_WORKER_INSTANCES=2
+cd $SPARK_HOME/libexec
+sbin/start-master.sh (this will start the master running locally on port 8080)
+sbin/start-slave.sh spark://**********:7077 (this url can be copied/paster from UI at localhost:8080)
+```
