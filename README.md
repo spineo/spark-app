@@ -123,6 +123,8 @@ Each instance/master can be stopped in reverse order using the commands "stop" v
 
 * Submit a job like before:
 ```
+git clone https://github.com/spineo/spark-app.git
+cd spark-app
 export PATH=$SPARK_HOME/bin:$PATH (might add this export to the ~/.bashrc)
 spark-submit --master spark://**********:7077 SparkApp.py --infile /somepath/sometextfile
 ```
