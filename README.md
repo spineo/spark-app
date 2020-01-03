@@ -72,7 +72,6 @@ A Quick Start guide available at https://spark.apache.org/docs/latest/quick-star
 ## Set up a Cluster in Standalone Mode
 
 ### Setting up a Cluster with one Master and two Executors Running locally (on Mac OS)
-
 ```
 export SPARK_HOME=/usr/local/Cellar/apache-spark/2.4.4 (can add this to the ~/.bashrc)
 export SPARK_WORKER_INSTANCES=2
@@ -90,3 +89,40 @@ spark-submit --master spark://**********:7077 SparkApp.py --infile /somepath/som
 ```
 
 ![Spark Standalone Cluster Running Application](images/spark-standalone-running.png)
+
+### Setting up a Cluster with one Master and one or more Executors Running on AWS (Amazon Linux)
+
+Since this cluster involves communication between two (or more) instances, below are the setup steps:
+* Created two AWS t2.large Amazon Linux instances
+* Yum installed Java 1.8.0_x (openjdk) and Git on each instance
+* Create a _spark_ user/group on each instance
+* Installed Spark 2.4.4 with Hadoop 2.7 on each instance (the _spark-2.4.4-bin-hadoop2.7.tgz___ can be downloaded from a mirror on  https://spark.apache.org/downloads and then uncompressed)
+* Moved installation to /var/applications/spark (arbitrary, provided it's the same on each instance) and ensured user/group ownership by user _spark_
+* On the master instance (as _spark_ user) create the id_rsa/id_rsa.pub from the private PEM file and place them in the ~/.ssh directory (or alternatively, generate a new "passwordless" set of keys):
+```
+ssh-keygen -f private.pem -y > ~/.ssh/id_rsa.pub
+cp private.pem ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
+```
+* Ensure that the public key (obtained from id_rsa.pub) is included in the ~/.ssh/authorized_keys file of each additional instance (should be able to ssh into each instance from master without a password prompt after this is done)
+
+* Create two AWS Security Groups: one with rule allowing inbound traffic to TCP port 8081 (default 8080 was being used by another application so I chose 8081) for the Web UI and another one on TCP port 7077 for enabling executors to access master. Assign both security groups to the master instance.
+
+* Optional: Add _export SPARK_HOME=/var/applications/spark_ to the _spark_ user .bashrc of each instance
+
+* Modify the $SPARK_HOME/conf/spark-env.sh file to include the variable _SPARK_MASTER_WEBUI_PORT=8081_ and add the public ip of each remote instance to the $SPARK_HOME/slaves file.
+
+* ssh into the master instance and run the following:
+```
+$SPARK_HOME/sbin/start-master.sh (and then verify that you can access the Web UI at http://<master-public-ip>:8081)
+$SPARK_HOME/sbin/start-slave.sh spark://<some-internal-ip>:7077 (and verify in the UI that local executor was attached to master)
+$SPARK_HOME/sbin/start-slaves.sh (and verify in the UI that each remote executor specified in the $SPARK_HOME/slaves file was attached to master)
+```
+
+Each instance/master can be stopped in reverse order using the commands "stop" versions (i.e., $SPARK_HOME/sbin/stop-slaves.sh and so on)
+
+* Submit a job like before:
+```
+export PATH=$SPARK_HOME/bin:$PATH (might add this export to the ~/.bashrc)
+spark-submit --master spark://**********:7077 SparkApp.py --infile /somepath/sometextfile
+```
